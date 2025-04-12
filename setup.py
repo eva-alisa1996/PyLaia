@@ -4,9 +4,9 @@ import setuptools
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(DIR, "laia/VERSION")) as f:
-    VERSION = f.read()
-
+#with open(os.path.join(DIR, "laia/VERSION")) as f:
+#    VERSION = f.read()
+VERSION = "1.0.6"
 
 def get_requirements():
     requirements_path = os.path.join(DIR, "requirements.txt")

@@ -225,6 +225,7 @@ class OptimizerArgs:
         SGD = "SGD"
         RMSProp = "RMSProp"
         Adam = "Adam"
+        AdamW = "AdamW"
 
     name: Name = Name.RMSProp
     learning_rate: PositiveFloat = 0.0005
