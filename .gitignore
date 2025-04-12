@@ -79,9 +79,6 @@ ENV/
 tmp/
 kk/
 
-#dataset folder
-dataset/
-
 # Project specific files
 laia/version.py
 
