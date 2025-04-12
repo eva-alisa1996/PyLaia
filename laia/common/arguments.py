@@ -226,7 +226,7 @@ class OptimizerArgs:
         RMSProp = "RMSProp"
         Adam = "Adam"
 
-    name: Name = Name.RMSProp
+    name: Name = Name.Adam
     learning_rate: PositiveFloat = 0.0005
     momentum: NonNegativeFloat = 0.0
     weight_l2_penalty: NonNegativeFloat = 0.0
