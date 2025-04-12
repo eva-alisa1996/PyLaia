@@ -35,6 +35,9 @@ wheels/
 pip-log.txt
 pip-delete-this-directory.txt
 
+# Requirements.txt changes encoding
+requirements.txt
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -79,14 +82,11 @@ ENV/
 tmp/
 kk/
 
-#dataset folder
-dataset/
-
 # Project specific files
 laia/version.py
 
 # data
-datasets/
+dataset/
 test-resources/
 
 # benchmarks
