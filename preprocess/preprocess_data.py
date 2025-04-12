@@ -7,7 +7,6 @@ import glob
 import shutil
 import re
 from PIL import Image
-from functions import *
 
 ### Maak splits vergelijkbaar met origineel artikel
 # Exacte seed is niet gegeven waardoor geen exacte reproductie mogelijk is. 
@@ -18,6 +17,7 @@ lines_dir         = data_dir + "lines/"
 splits_csv        = pd.read_csv(data_dir + 'splits.csv', sep= ";")
 
 save_splits       = True
+create_subsets    = [10,40,100]
 
 # Groepeer de data op 'form_id' en tel het aantal regels per formulier
 splits_csv['folder_id'] = [re.split(pattern = "-", string = i)[0] for i in splits_csv.form_id]
@@ -106,23 +106,37 @@ for split in splits.keys():
         paths.append(split_dir + split + "/" + form_id_line_id + ".png")
         labels.append(labels_df.loc[labels_df['filename'] == form_id_line_id, 'trancription'].values[0])
     
-    with open(split_dir + split + '_.txt', 'w', encoding='utf-8') as f1, open(split_dir + split + '_ids.txt', 'w', encoding='utf-8') as f2, open(split_dir + split + '_eval.txt', 'w', encoding='utf-8') as f3, open(split_dir + split + '.txt', 'w', encoding='utf-8') as f4:
+    full_data_dir = split_dir + "full_dataset/"
+    os.makedirs(full_data_dir, exist_ok=True)
+
+    with open(full_data_dir + split + '_labels.txt', 'w', encoding='utf-8') as f1, \
+        open(full_data_dir + split + '_ids.txt', 'w', encoding='utf-8') as f2, \
+            open(full_data_dir + split + '_eval.txt', 'w', encoding='utf-8') as f3, \
+                open(full_data_dir + split + '.txt', 'w', encoding='utf-8') as f4:
         for path, label in zip(paths, labels):
             f1.write(f"{path} {label}\n")
             f2.write(f"{path}\n")
             f3.write(f"{path}\n")
             f4.write(f"{path} {' '.join(list(str(label)))}\n")
 
+
+def create_subset(files, split_dir, subset):
+    sub_dir = split_dir + "subset_" + str(subset)
+    os.makedirs(sub_dir, exist_ok=True)
+    for filename in files:
+        with open(os.path.join(split_dir + "full_dataset/", filename), 'r', encoding='utf-8') as orig_file, \
+             open(os.path.join(sub_dir, filename), 'w', encoding='utf-8') as subsetfile:
+            lines = orig_file.readlines()
+            for line in lines[:subset]:
+                subsetfile.write(line)
+
+files = os.listdir(full_data_dir)
+files = [f for f in files if ".txt" in f and ("test" in f or "val" in f or "train" in f)]
+for subset in create_subsets:
+    create_subset(files, split_dir, subset=subset)
+
 # Move syms.txt naar split folder
 shutil.move(data_dir + "syms.txt", split_dir + "syms.txt")
-
-# shutil.copy(line_path, split_dir + split + form_id_line_id + ".png")
-##txt files
-#split_labels.txt path text
-#split_ids.txt path
-#split_eval.txt same as labels?
-#split.txt path space seperated text
-
 
 
 
