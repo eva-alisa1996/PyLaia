@@ -27,8 +27,8 @@ setuptools.setup(
     maintainer="Teklia",
     maintainer_email="contact@teklia.com",
     license="MIT",
-    url="https://github.com/jpuigcerver/PyLaia",
-    download_url="https://github.com/jpuigcerver/PyLaia",
+    url="https://github.com/eva-alisa1996/PyLaia",
+    download_url="https://github.com/eva-alisa1996/PyLaia",
     # Requirements
     setup_requires=["setuptools_scm"],
     install_requires=get_requirements(),
