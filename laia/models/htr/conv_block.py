@@ -27,6 +27,7 @@ class ConvBlock(nn.Module):
         use_masks: bool = False,
     ) -> None:
         super().__init__()
+
         ks, st, di, ps = ConvBlock.prepare_dimensional_args(
             kernel_size, stride, dilation, poolsize
         )
@@ -55,8 +56,17 @@ class ConvBlock(nn.Module):
         # Add Batch normalization
         self.batchnorm = nn.BatchNorm2d(out_channels) if batchnorm else None
 
+        # Don't use Inplace if PReLU
+        if activation:
+            if activation == nn.PReLU:
+                self.activation = activation()  # PReLU does not take 'inplace'
+            else:
+                self.activation = activation(inplace=inplace)  # Other activations like LeakyReLU can take 'inplace'
+        else:
+            self.activation = None
+
         # Activation function must support inplace operations.
-        self.activation = activation(inplace=inplace) if activation else None
+        #self.activation = activation(inplace=inplace) if activation else None
 
         # Add maxpool layer
         self.pool = nn.MaxPool2d(ps) if self.poolsize else None
