@@ -61,6 +61,12 @@ class EngineModule(pl.LightningModule):
                 lr=self.lr,
                 weight_decay=weight_decay,
             )
+        elif self.optimizer.name == "AdamW":
+            optimizer = torch.optim.AdamW(
+                self.parameters(),
+                lr=self.lr,
+                weight_decay=weight_decay,
+            )
         else:
             raise NotImplementedError(f"Optimizer: {self.optimizer.name}")
         if self.scheduler is not None and self.scheduler.active:
