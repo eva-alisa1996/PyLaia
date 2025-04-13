@@ -92,6 +92,7 @@ def run(
         # shuffle_tr=not bool(trainer.limit_train_batches),
         shuffle_tr=True if trainer.limit_train_batches == 1 else False,
         augment_tr=train.augment_training,
+        erase_tr=train.erase_training,
         stage="fit",
         num_workers=num_workers,
     )
