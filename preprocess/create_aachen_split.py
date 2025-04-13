@@ -14,7 +14,6 @@ data_dir          = os.getcwd() + "/dataset/" #dataset directory
 lines_dir         = data_dir + "lines/"
 splits_csv        = pd.read_csv(data_dir + 'splits.csv', sep= ";")
 
-save_splits       = True
 create_subsets    = [10,40,100]
 
 # Inlezen splits
@@ -50,7 +49,7 @@ for split in splits.keys():
         with Image.open(line_path) as img:
             img_resized = img.resize((int(128 * img.width / img.height), 128), Image.LANCZOS)
             img_resized.save(split_dir + split + "/" + line + ".png")
-        paths.append(split_dir + split + "/" + line + ".png")
+        paths.append("/dataset/splits/"+ split + "/" + line + ".png")
         labels.append(labels_df.loc[labels_df['filename'] == line, 'trancription'].values[0])
 
     with open(full_data_dir + split + '_labels.txt', 'w', encoding='utf-8') as f1, \
