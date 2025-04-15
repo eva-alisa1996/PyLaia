@@ -60,7 +60,8 @@ for split in splits.keys():
              f1.write(f"{path} {label}\n")
              f2.write(f"{path}\n")
              f3.write(f"{path}\n")
-             f4.write(f"{path} {' '.join(list(str(label)))}\n")
+             label = ' <space> '.join([' '.join(word) for word in label.strip().split()])
+             f4.write(f"{path} {label}\n")
 
 
 def create_subset(files, split_dir, subset):
