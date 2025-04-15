@@ -3,8 +3,8 @@ import torchvision.transforms as T
 import torch
 
 # random erasing with implemented torch erasing function
-def get_random_erasing(p=0.5):
-    return T.RandomErasing(p=p, scale=(0.02, 0.33), ratio=(0.3, 3.3), value=0)
+def get_random_erasing(p=1):
+    return T.RandomErasing(p=p, scale=(0.01, 0.1), ratio=(5,15), value=0)
 
 # data wrapper
 class AugmentedImageTransform(torch.nn.Module):

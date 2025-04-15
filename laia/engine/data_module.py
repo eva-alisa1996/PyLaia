@@ -66,7 +66,7 @@ class DataModule(pl.LightningDataModule):
             tr_img_transform = transforms.vision.AugmentedImageTransform(
                 base_transform=base_img_transform,
                 apply_erasing=erase_tr,
-                erasing_transform=transforms.vision.get_random_erasing(p=0.5)
+                erasing_transform=transforms.vision.get_random_erasing(p=1)
             )
             txt_transform = transforms.text.ToTensor(syms)
             _logger.info(f"Training data transforms:\n{tr_img_transform}")
