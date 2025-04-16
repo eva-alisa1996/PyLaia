@@ -1,12 +1,10 @@
 # Import libraries
-import numpy as np
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
 import glob
 import shutil
-import re
 from PIL import Image
+from typing import Optional
 
 ### Maak splits op basis van artikel 
 
@@ -64,7 +62,21 @@ for split in splits.keys():
              f4.write(f"{path} {label}\n")
 
 
-def create_subset(files, split_dir, subset):
+def create_subset(
+        files: list, 
+        split_dir: str, 
+        subset: int):
+    
+    """
+    Genereert een subset van de splits voor tests.
+
+    Args:
+        files: list van txt files waarvan een susbet gemaakt moet worden
+        split_dir: directory waar de nieuwe split opgeslagen moet worden
+        subset: grote van de subset (bijv. 10)
+    """
+
+    
     sub_dir = split_dir + "subset_" + str(subset)
     os.makedirs(sub_dir, exist_ok=True)
     for filename in files:
@@ -79,5 +91,49 @@ files = [f for f in files if ".txt" in f and ("test" in f or "val" in f or "trai
 for subset in create_subsets:
     create_subset(files, split_dir, subset=subset)
 
-# Move syms.txt naar split folder
-shutil.copy(data_dir + "syms.txt", split_dir + "syms.txt")
+# Create syms table
+def generate_syms_from_labels(
+    labels: list,
+    output_syms_file: str,
+    include_blank: bool = True,
+    special_tokens: Optional[list] = None,
+):
+    """
+    Genereert een syms.txt bestand op basis van unieke karakters in het labelbestand.
+
+    Args:
+        labels: list met alle labels waaruit de syms.txt gemaakt moet worden
+        include_blank: Voeg <ctc> als eerste token toe.
+        special_tokens: Extra tokens zoals "<space>" of "<unk>".
+    """
+
+    # Zet alle labels om naar een set van unieke symbolen
+    symbols = set("".join(labels))
+    symbols = sorted(symbols)
+
+    index = 0
+    lines = []
+
+    # Voeg <eps> token toe als include_blank True is
+    if include_blank:
+        lines.append("<ctc> 0")
+        index += 1
+
+    # Voeg speciale tokens toe als die zijn opgegeven
+    if special_tokens:
+        for token in special_tokens:
+            lines.append(f"{token} {index}")
+            index += 1
+
+    # Voeg de symbolen toe, vervang spaties door <space>
+    for s in symbols:
+        printable_symbol = "<space>" if s == " " else s
+        lines.append(f"{printable_symbol} {index}")
+        index += 1
+
+    with open(output_syms_file, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+
+syms_table = generate_syms_from_labels(labels = labels_df.trancription, 
+                                       output_syms_file = data_dir + "syms.txt")
