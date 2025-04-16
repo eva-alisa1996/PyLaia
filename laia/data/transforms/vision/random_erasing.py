@@ -14,7 +14,9 @@ class AugmentedImageTransform(torch.nn.Module):
         self.erasing = erasing_transform if apply_erasing else None
 
     def forward(self, img):
+        print("apply transform")
         img = self.base_transform(img)
         if self.erasing:
+            print("apply erasing")
             img = self.erasing(img)
         return img
