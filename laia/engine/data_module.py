@@ -9,6 +9,7 @@ from torch.utils.data import DataLoader, DistributedSampler
 
 import laia.common.logging as log
 import laia.data.transforms as transforms
+
 from laia.data import (
     ImageFromListDataset,
     PaddingCollater,
@@ -34,6 +35,7 @@ class DataModule(pl.LightningDataModule):
         color_mode: str = "L",
         shuffle_tr: bool = True,
         augment_tr: bool = False,
+        erase_tr: bool = False,
         stage: str = "fit",
         num_workers: Optional[int] = None,
     ) -> None:
@@ -41,6 +43,7 @@ class DataModule(pl.LightningDataModule):
         base_img_transform = transforms.vision.ToImageTensor(
             mode=color_mode, invert=True, min_width=min_valid_size
         )
+        #add updated transform?
         self.img_dirs = img_dirs
         self.img_channels = len(color_mode)
         self.batch_size = batch_size
@@ -52,13 +55,18 @@ class DataModule(pl.LightningDataModule):
             self.tr_txt_table = tr_txt_table
             self.va_txt_table = va_txt_table
             self.shuffle_tr = shuffle_tr
-            tr_img_transform = transforms.vision.ToImageTensor(
+            base_img_transform = transforms.vision.ToImageTensor(
                 mode=color_mode,
                 invert=True,
                 min_width=min_valid_size,
                 random_transform=transforms.vision.RandomBetaAffine()
                 if augment_tr
                 else None,
+            )
+            tr_img_transform = transforms.vision.AugmentedImageTransform(
+                base_transform=base_img_transform,
+                apply_erasing=erase_tr,
+                erasing_transform=transforms.vision.get_random_erasing(p=0.5)
             )
             txt_transform = transforms.text.ToTensor(syms)
             _logger.info(f"Training data transforms:\n{tr_img_transform}")
